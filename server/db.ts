@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc, and, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, articles, categories, videos, opportunities, teamMembers, contentSqueeze, Article, Video, Opportunity, TeamMember, ContentSqueeze, Category } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,287 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// ===== ARTICLES =====
+export async function getPublishedArticles(limit = 10, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(articles)
+    .where(eq(articles.status, "published"))
+    .orderBy(desc(articles.publishedAt))
+    .limit(limit)
+    .offset(offset);
+}
+
+export async function getArticleBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select()
+    .from(articles)
+    .where(and(eq(articles.slug, slug), eq(articles.status, "published")))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getArticlesByCategoryId(categoryId: number, limit = 10) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(articles)
+    .where(and(eq(articles.categoryId, categoryId), eq(articles.status, "published")))
+    .orderBy(desc(articles.publishedAt))
+    .limit(limit);
+}
+
+export async function getAllArticles(limit = 100, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(articles)
+    .orderBy(desc(articles.createdAt))
+    .limit(limit)
+    .offset(offset);
+}
+
+export async function createArticle(data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(articles).values(data);
+  return result;
+}
+
+export async function updateArticle(id: number, data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.update(articles).set(data).where(eq(articles.id, id));
+}
+
+export async function deleteArticle(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.delete(articles).where(eq(articles.id, id));
+}
+
+// ===== CATEGORIES =====
+export async function getAllCategories() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(categories);
+}
+
+export async function createCategory(data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.insert(categories).values(data);
+}
+
+export async function updateCategory(id: number, data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.update(categories).set(data).where(eq(categories.id, id));
+}
+
+export async function deleteCategory(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.delete(categories).where(eq(categories.id, id));
+}
+
+// ===== VIDEOS =====
+export async function getPublishedVideos(limit = 10, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(videos)
+    .where(eq(videos.status, "published"))
+    .orderBy(desc(videos.publishedAt))
+    .limit(limit)
+    .offset(offset);
+}
+
+export async function getVideoBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select()
+    .from(videos)
+    .where(and(eq(videos.slug, slug), eq(videos.status, "published")))
+    .limit(1);
+  
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getAllVideos(limit = 100, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(videos)
+    .orderBy(desc(videos.createdAt))
+    .limit(limit)
+    .offset(offset);
+}
+
+export async function createVideo(data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.insert(videos).values(data);
+}
+
+export async function updateVideo(id: number, data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.update(videos).set(data).where(eq(videos.id, id));
+}
+
+export async function deleteVideo(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.delete(videos).where(eq(videos.id, id));
+}
+
+// ===== OPPORTUNITIES =====
+export async function getActiveOpportunities(limit = 10, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(opportunities)
+    .where(eq(opportunities.status, "active"))
+    .orderBy(desc(opportunities.createdAt))
+    .limit(limit)
+    .offset(offset);
+}
+
+export async function getOpportunitiesByType(type: string, limit = 10) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(opportunities)
+    .where(and(eq(opportunities.type, type as any), eq(opportunities.status, "active")))
+    .orderBy(desc(opportunities.createdAt))
+    .limit(limit);
+}
+
+export async function getAllOpportunities(limit = 100, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(opportunities)
+    .orderBy(desc(opportunities.createdAt))
+    .limit(limit)
+    .offset(offset);
+}
+
+export async function createOpportunity(data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.insert(opportunities).values(data);
+}
+
+export async function updateOpportunity(id: number, data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.update(opportunities).set(data).where(eq(opportunities.id, id));
+}
+
+export async function deleteOpportunity(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.delete(opportunities).where(eq(opportunities.id, id));
+}
+
+// ===== TEAM MEMBERS =====
+export async function getAllTeamMembers() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(teamMembers)
+    .orderBy(asc(teamMembers.displayOrder));
+}
+
+export async function createTeamMember(data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.insert(teamMembers).values(data);
+}
+
+export async function updateTeamMember(id: number, data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.update(teamMembers).set(data).where(eq(teamMembers.id, id));
+}
+
+export async function deleteTeamMember(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.delete(teamMembers).where(eq(teamMembers.id, id));
+}
+
+// ===== CONTENT SQUEEZE =====
+export async function getActiveContentSqueeze() {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(contentSqueeze)
+    .where(eq(contentSqueeze.status, "active"))
+    .orderBy(asc(contentSqueeze.displayOrder));
+}
+
+export async function getAllContentSqueeze(limit = 100, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select()
+    .from(contentSqueeze)
+    .orderBy(desc(contentSqueeze.createdAt))
+    .limit(limit)
+    .offset(offset);
+}
+
+export async function createContentSqueeze(data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.insert(contentSqueeze).values(data);
+}
+
+export async function updateContentSqueeze(id: number, data: any) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.update(contentSqueeze).set(data).where(eq(contentSqueeze.id, id));
+}
+
+export async function deleteContentSqueeze(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.delete(contentSqueeze).where(eq(contentSqueeze.id, id));
+}
