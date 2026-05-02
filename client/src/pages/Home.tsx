@@ -18,6 +18,11 @@ export default function Home() {
       {/* Hero Section */}
       <section className="brand-gradient text-white py-20 px-4">
         <div className="container mx-auto text-center">
+          <img 
+            src="/manus-storage/79093_a0954ed1.jpg" 
+            alt="Campus Vibes Media Logo" 
+            className="h-32 w-auto mx-auto mb-8 fade-in drop-shadow-lg"
+          />
           <h1 className="text-5xl md:text-6xl font-bold mb-6 fade-in">Campus Vibes Media</h1>
           <p className="text-xl md:text-2xl mb-8 opacity-90 fade-in">
             Your gateway to campus news, stories, and opportunities

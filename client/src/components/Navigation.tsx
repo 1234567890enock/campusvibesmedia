@@ -26,11 +26,12 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/">
-            <div className="flex items-center gap-2 font-bold text-lg text-gradient cursor-pointer">
-              <div className="w-8 h-8 rounded-lg brand-gradient flex items-center justify-center text-white font-bold">
-                CV
-              </div>
-              <span className="hidden sm:inline">Campus Vibes</span>
+            <div className="flex items-center gap-2 cursor-pointer">
+              <img 
+                src="/manus-storage/79093_a0954ed1.jpg" 
+                alt="Campus Vibes Media" 
+                className="h-12 w-auto object-contain"
+              />
             </div>
           </Link>
 
