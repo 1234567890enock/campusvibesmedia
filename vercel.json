@@ -1,0 +1,13 @@
+{
+  "buildCommand": "pnpm build",
+  "startCommand": "node dist/index.js",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "dist/index.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  }
+}
